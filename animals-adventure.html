@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Animals Adventure | Wild stories from the high peaks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--night:#0b1220;--ridge:#16233a;--ember:#ff8a2b;--gold:#ffc857;--text:#eaf3fa;--muted:#b3c5d6;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--night:#0b1220}}
+:root[data-theme="dark"]{--night:#0b1220}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0}
+body{background:var(--night);color:var(--text);font-family:'Nunito Sans',system-ui,sans-serif;line-height:1.6;min-height:100vh;overflow-x:hidden}
+h1,h2,h3{font-family:'Cinzel',Georgia,serif;letter-spacing:.02em}
+.bg{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#1b2f52 0%,#5a3d59 55%,#ff8a2b 100%);overflow:hidden}
+.sun{position:absolute;left:50%;bottom:14%;width:min(60vw,440px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff2c2 0%,var(--gold) 30%,var(--ember) 60%,transparent 72%);transform:translate(-50%,-10%);animation:rise 3s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes rise{from{transform:translate(-50%,70%)}}
+.peaks{position:absolute;left:0;bottom:0;width:100%;height:48%}
+.peaks g{transition:transform .25s ease-out}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+nav{position:relative;z-index:3;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;padding:16px 12px}
+nav button{font:700 .95rem 'Nunito Sans',system-ui,sans-serif;color:var(--text);background:rgba(11,18,32,.55);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:9px 20px;cursor:pointer;backdrop-filter:blur(6px);transition:background .25s,transform .2s}
+nav button:hover{transform:translateY(-2px)}
+nav button[aria-current="page"]{background:var(--ember);color:#1a0d00;border-color:var(--ember)}
+button:focus-visible,a:focus-visible,.tile:focus-visible{outline:3px solid #fff;outline-offset:3px}
+main{position:relative;z-index:2}
+.page{display:none;min-height:calc(100vh - 80px);padding:24px 20px 70px;max-width:1080px;margin:auto;flex-direction:column;justify-content:center;animation:fade .7s ease}
+body[data-page=home] #home,body[data-page=adv] #adv,body[data-page=about] #about,body[data-page=follow] #follow{display:flex}
+@keyframes fade{from{opacity:0;transform:translateY(16px)}}
+.center{text-align:center;align-items:center}
+h1{font-size:clamp(2.6rem,10vw,6rem);font-weight:800;line-height:1.02;text-shadow:0 4px 40px rgba(0,0,0,.45);background:linear-gradient(90deg,#fff,var(--gold),var(--ember),#fff);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:-250% 0}}
+.tag{margin-top:14px;max-width:34ch;font-size:clamp(1rem,3.5vw,1.3rem);color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.ur{display:block;margin-top:6px;color:var(--gold)}
+.btn{display:inline-block;margin-top:26px;padding:14px 30px;border-radius:999px;background:var(--ember);color:#1a0d00;font-weight:700;text-decoration:none;animation:pulse 2.4s infinite;transition:transform .2s}
+.btn:hover{transform:scale(1.06)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,138,43,.7)}70%,100%{box-shadow:0 0 0 18px rgba(255,138,43,0)}}
+.stats{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:34px}
+.card{background:rgba(11,18,32,.68);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:20px 26px}
+.num{font-family:'Cinzel',Georgia,serif;font-size:clamp(2rem,7vw,3rem);color:var(--gold);line-height:1.1}
+.lbl{color:var(--muted);font-size:.95rem}
+h2{font-size:clamp(1.8rem,6vw,2.8rem);margin-bottom:10px;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+.lead{max-width:56ch;margin-bottom:28px;text-shadow:0 1px 10px rgba(0,0,0,.6)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;width:100%}
+.tile{position:relative;border-radius:22px;padding:26px 20px;min-height:250px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;cursor:pointer;transition:transform .35s,box-shadow .35s}
+.tile:hover,.tile:focus-visible{transform:translateY(-8px) rotate(-1deg);box-shadow:0 20px 40px rgba(0,0,0,.5)}
+.em{position:absolute;top:12px;right:16px;font-size:4.4rem;transition:transform .5s}
+.tile:hover .em{transform:scale(1.25) rotate(8deg)}
+.tile h3{font-size:1.5rem}.tile p{font-size:.95rem}
+.lion{background:linear-gradient(160deg,#c98a2b,#4a2a0c)}.fox{background:linear-gradient(160deg,#ff8a2b,#7a2808)}
+.wolf{background:linear-gradient(160deg,#5d7891,#16232f)}.tiger{background:linear-gradient(160deg,#e9a23b,#33230e)}
+.facts{display:grid;gap:14px;max-width:560px}
+.facts .card b{color:var(--gold)}
+footer{position:relative;z-index:2;text-align:center;padding:18px;color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-page="home">
+<div class="bg" aria-hidden="true">
+<div class="sun"></div><canvas id="snow"></canvas>
+<svg class="peaks" viewBox="0 0 1200 400" preserveAspectRatio="none">
+<g data-d="10"><polygon fill="#3a3a5e" points="0,400 0,220 150,110 260,200 420,60 600,210 760,90 930,200 1080,120 1200,210 1200,400"/></g>
+<g data-d="22"><polygon fill="#22304f" points="0,400 0,280 120,190 260,270 400,150 560,280 720,170 880,290 1040,190 1200,280 1200,400"/></g>
+<g data-d="40"><polygon fill="#0b1220" points="0,400 0,330 180,260 320,330 500,240 680,335 860,250 1030,335 1200,270 1200,400"/></g>
+</svg></div>
+<nav aria-label="Pages">
+<button data-go="home">Home</button><button data-go="adv">Adventures</button><button data-go="about">About</button><button data-go="follow">Follow</button>
+</nav>
+<main>
+<section class="page center" id="home">
+<h1>Animals Adventure</h1>
+<p class="tag">Lions, foxes, wolves and tigers, filmed where the air is thin and the stories are big.<span class="ur">پہاڑوں کی جنگلی کہانیاں</span></p>
+<div class="stats">
+<div class="card"><div class="num" data-to="1500" data-suffix="+">0</div><div class="lbl">followers</div></div>
+<div class="card"><div class="num" data-to="122">0</div><div class="lbl">posts</div></div>
+<div class="card"><div class="num" data-to="21">0</div><div class="lbl">following</div></div>
+</div>
+<a class="btn" href="https://www.facebook.com/share/1EAQpgsryX/" target="_blank" rel="noopener">Follow on Facebook</a>
+</section>
+<section class="page" id="adv">
+<h2>Meet the wild ones</h2>
+<p class="lead">Every reel follows one animal across cliffs, forests and snow. Pick a character.</p>
+<div class="grid">
+<div class="tile lion" tabindex="0"><span class="em">🦁</span><h3>The Lion</h3><p>King of the ridge line, always watching the valley.</p></div>
+<div class="tile fox" tabindex="0"><span class="em">🦊</span><h3>The Fox</h3><p>Chases the sunrise over golden slopes.</p></div>
+<div class="tile wolf" tabindex="0"><span class="em">🐺</span><h3>The Wolf</h3><p>Rules the frozen rivers and snowy passes.</p></div>
+<div class="tile tiger" tabindex="0"><span class="em">🐯</span><h3>The Tiger</h3><p>Silent and powerful in the deep forest.</p></div>
+</div>
+</section>
+<section class="page" id="about">
+<h2>About the channel</h2>
+<p class="lead">Animals Adventure is a digital creator page by Nausheen Nabeel. It shares cinematic wildlife stories and reels of big cats, foxes and wolves in mountain worlds.</p>
+<div class="facts">
+<div class="card"><b>Creator</b><br>Nausheen Nabeel</div>
+<div class="card"><b>What you will see</b><br>Short reels and posts, 122 so far, about animals on epic journeys.</div>
+<div class="card"><b>Community</b><br>1,500+ followers and growing.</div>
+</div>
+</section>
+<section class="page center" id="follow">
+<h2>Join the journey</h2>
+<p class="lead">New reels land on Facebook first. Follow Animals Adventure so you never miss the next climb.</p>
+<div class="card"><div class="num">Nausheen Nabeel</div><div class="lbl">Animals Adventure on Facebook</div></div>
+<a class="btn" href="https://www.facebook.com/share/1EAQpgsryX/" target="_blank" rel="noopener">Open on Facebook</a>
+</section>
+</main>
+<footer>Animals Adventure. Wild stories from the high peaks.</footer>
+<script>
+(function(){
+var b=document.body,btns=document.querySelectorAll('nav button'),names=['home','adv','about','follow'];
+function count(){document.querySelectorAll('#home .num').forEach(function(n){var t=+n.dataset.to,s=n.dataset.suffix||'',k=0;n.textContent='0';var iv=setInterval(function(){k+=Math.ceil(t/45);if(k>=t){k=t;clearInterval(iv)}n.textContent=k.toLocaleString()+(k==t?s:'')},30)})}
+function go(p){if(names.indexOf(p)<0)p='home';b.dataset.page=p;btns.forEach(function(x){x.dataset.go==p?x.setAttribute('aria-current','page'):x.removeAttribute('aria-current')});if(p=='home')count();scrollTo(0,0)}
+btns.forEach(function(x){x.addEventListener('click',function(){history.replaceState(null,'','#'+x.dataset.go);go(x.dataset.go)})});
+go(location.hash.slice(1));
+var c=document.getElementById('snow'),x=c.getContext('2d'),P=[],W,H;
+function size(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight}size();addEventListener('resize',size);
+for(var i=0;i<70;i++)P.push({x:Math.random(),y:Math.random(),r:Math.random()*2.2+.6,s:Math.random()*.5+.2,d:Math.random()*2});
+function f(){x.clearRect(0,0,W,H);x.fillStyle='rgba(255,255,255,.8)';P.forEach(function(p){p.y+=p.s/300;p.x+=Math.sin(p.d+=.01)/1500;if(p.y>1)p.y=0;x.beginPath();x.arc(p.x*W,p.y*H,p.r,0,7);x.fill()});requestAnimationFrame(f)}
+if(!matchMedia('(prefers-reduced-motion:reduce)').matches)f();
+var g=document.querySelectorAll('.peaks g');
+addEventListener('pointermove',function(e){var m=e.clientX/innerWidth-.5;g.forEach(function(el){el.style.transform='translateX('+(-m*el.dataset.d)+'px)'})});
+})();
+</script>
+</body>
+</html>
